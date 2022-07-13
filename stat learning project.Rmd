@@ -1,0 +1,72 @@
+---
+title: "Untitled"
+author: "Horatiu"
+date: '2022-06-22'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+FIFA 22
+first we do libraries
+
+```{r}
+library(knitr) 
+#library(kableExtra) #nice html tables
+#library(magick)     #working with images
+library(ggplot2)    #graphs
+library(reshape2)   #dataframe reshaping
+library(viridis)    #colors
+library(stringr)    #working with strings
+library(FactoMineR) #factor analysis (PCA)
+library(factoextra) #factor analysis (PCA)
+#library(kohonen)    #self-organised maps/SOM 
+```
+
+## EDA
+
+
+```{r}
+players_full <- read.csv(file = 'E:/horatiu/FIS/players_22.csv/players_22.csv') #full dataset
+dim(players_full)
+summary(players_full)
+```
+
+```{r}
+#head(players_full, n = 5)
+players_22 <- subset(players_full, select = -c(sofifa_id,player_url,long_name,dob,club_jersey_number, club_loaned_from,club_joined,club_contract_valid_until,nationality_id,nation_team_id,nation_jersey_number,release_clause_eur,player_tags,player_traits,player_face_url,club_logo_url,club_flag_url,club_team_id,wage_eur,real_face,nation_logo_url,nation_flag_url,work_rate,goalkeeping_speed,club_jersey_number,club_team_id,nation_team_id,nation_jersey_number,release_clause_eur,club_contract_valid_until,release_clause_eur, league_level,goalkeeping_diving,goalkeeping_handling,goalkeeping_kicking,goalkeeping_positioning,goalkeeping_reflexes,ls,st,rs,lw,lf,cf,rf,rw,lam,cam,ram,lm,lcm,cm,rcm,rm,lwb,ldm,cdm,rdm,rwb,lb,ldm,cdm,rdm,rwb,lb,lcb,cb,rcb,rb,gk))
+dim(players_22)
+```
+```{r}
+head(players_22, n=5)
+summary(players_22)
+```
+## Check for Na - many cause we have both goalkeepers and players
+```{r}
+which(apply(X = players_22, MARGIN = 2, FUN = anyNA) == TRUE)
+```
+## Check how many goalkeepers
+
+```{r}
+goalkeepers <- str_detect(players_22$player_positions, "GK")
+sum(goalkeepers)
+```
+#separate goalkeepers
+```{r}
+gk_df<-subset(players_22, player_positions="GK")
+players_22<-subset(players_22, player_positions!="GK")
+which(apply(X = players_22, MARGIN = 2, FUN = anyNA) == TRUE)
+which(apply(X = players_22, MARGIN = 2, FUN = anyNA) == TRUE)
+dim(players_22)
+head(players_22, n = 2)
+```
+```{r}
+players_22 <- na.omit(players_22)
+dim(players_22)
+nums <- unlist(lapply(players_22, is.numeric)) 
+pairs(data = nums)
+```
